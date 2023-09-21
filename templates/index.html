@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 700px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">List Data Feeders</h1>
+    <div style="overflow-x: auto;">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Feeder Barcode</th>
+                    <th>Feeder Name</th>
+                    <th>Feeder Token</th>
+                    <th>Feeder UUID</th>
+                    <th>Feeder JWT</th>
+                    <th>Feeder Type</th>
+                    <th>Feeder Version</th>
+                    <th>Inject</th>
+                </tr>
+            </thead>
+            <tbody id="root"></tbody>
+        </table>
+    </div>
+    <div class="card">
+        <h1>Cek Data dari EEPROM</h1>
+        <p>Barcode: <span id="Barcode">{{Barcode}}</span></p>
+        <p>Name: <span id="Name"></span>{{ Name }}</p>
+        <p>Token: <span id="Token"></span>{{ Token }}</p>
+        <p>UUID: <span id="Uuid"></span>{{Uuid}}</p>
+        <p>JWT: <span id="Jwt"></span>{{Jwt}}</p>
+        <p>Type: <span id="Type"></span>{{Type}}</p>
+        <p>Version: <span id="Version"></span>{{Version}}</p>
+        <form method="POST" action="/read_data">
+            <input type="submit" value="Load Data">
+        </form>
+        <br>
+        <form action="/download_history">
+            <input type="submit" value="Download History">
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const root = document.getElementById("root");
+            const data = await getData();
+
+            async function getData() {
+                const response = await fetch("https://l4dz56mh-3000.asse.devtunnels.ms/eeprom");
+                const resJson = await response.json();
+                return resJson.data;
+            }
+
+            async function injectFunction(data) {
+                const response = await fetch("/write_data", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                const resJson = await response.json();
+                console.log(resJson);
+            }
+
+            function createList(feeder, injectFn) {
+                const tr = document.createElement("tr");
+                const tdFeederBarcode = document.createElement("td");
+                const tdFeederName = document.createElement("td");
+                const tdFeederToken = document.createElement("td");
+                const tdFeederUUID = document.createElement("td");
+                const tdFeederJWT = document.createElement("td");
+                const tdFeederType = document.createElement("td");
+                const tdFeederVersion = document.createElement("td");
+                const tdFeederInject = document.createElement("td");
+                const button = document.createElement("button");
+
+                tdFeederBarcode.innerText = feeder.barcode;
+                tdFeederName.innerText = feeder.name;
+                tdFeederToken.innerText = feeder.token;
+                tdFeederUUID.innerText = feeder.uuid;
+                tdFeederJWT.innerText = feeder.jwt;
+                tdFeederType.innerText = feeder.type;
+                tdFeederVersion.innerText = feeder.version;
+                button.innerText = "Inject";
+
+                tdFeederInject.addEventListener("click", () => {
+                    injectFn(feeder);
+                });
+
+                tdFeederInject.appendChild(button);
+                tr.appendChild(tdFeederBarcode);
+                tr.appendChild(tdFeederName);
+                tr.appendChild(tdFeederToken);
+                tr.appendChild(tdFeederUUID);
+                tr.appendChild(tdFeederJWT);
+                tr.appendChild(tdFeederType);
+                tr.appendChild(tdFeederVersion);
+                tr.appendChild(tdFeederInject);
+
+                return tr;
+            }
+
+            function createContent(root, data, injectFunction) {
+                data.forEach((feeder) => {
+                    const tr = createList(feeder, injectFunction);
+                    root.appendChild(tr);
+                });
+            }
+
+            createContent(root, data, injectFunction);
+        });
+    </script>
+</body>
+</html>
