@@ -107,27 +107,52 @@ def write_data():
 @app.route('/read_data', methods=['POST'])
 def read_data():
         
-        feederBarcode = read_string(0, 22)
-        feederName = read_string(22, 14)
-        feederToken = read_string(36, 14)
-        feederUuid = read_string(50, 36)
-        feederJwt = read_string(86, 72)
-        feederType = read_string(158, 4)
-        feederVersion = read_string(162, 4)
+        # feederBarcode = read_string(0, 22)
+        # feederName = read_string(22, 14)
+        # feederToken = read_string(36, 14)
+        # feederUuid = read_string(50, 36)
+        # feederJwt = read_string(86, 72)
+        # feederType = read_string(158, 4)
+        # feederVersion = read_string(162, 4)
 
-        os.system(f"gpio write {pin_led_green} 1")
-        time.sleep(2)
-        os.system(f"gpio write {pin_led_green} 0")
+        # os.system(f"gpio write {pin_led_green} 1")
+        # time.sleep(2)
+        # os.system(f"gpio write {pin_led_green} 0")
 
-        print("Feeder Barcode:", feederBarcode)
-        print("Feeder Name:", feederName)
-        print("Feeder Token:", feederToken)
-        print("Feeder UUID:", feederUuid)
-        print("Feeder JWT:", feederJwt)
-        print("Feeder Type:", feederType)
-        print("Feeder Version:", feederVersion)
+        # print("Feeder Barcode:", feederBarcode)
+        # print("Feeder Name:", feederName)
+        # print("Feeder Token:", feederToken)
+        # print("Feeder UUID:", feederUuid)
+        # print("Feeder JWT:", feederJwt)
+        # print("Feeder Type:", feederType)
+        # print("Feeder Version:", feederVersion)
 
-        return render_template('index.html', Barcode=feederBarcode, Name=feederName, Token=feederToken, Uuid=feederUuid, Jwt=feederJwt, Type=feederType, Version=feederVersion)
+        read_data = read_string(0, 1024)  
+
+        print("Data yang dibaca dari EEPROM:", read_data)
+
+        strArr = list(filter(None, read_data.split(';')))
+
+        data = {
+            'barcode': strArr[0],
+            'name': strArr[1],
+            'token': strArr[2],
+            'uuid': strArr[3],
+            'jwt': strArr[4],
+            'type': strArr[5],
+            'version': strArr[6]
+        }
+
+        print("Objek yang dihasilkan dari data EEPROM:", data)
+        print("Barcode:", data['barcode'])
+        print("Name:", data['name'])
+        print("Token:", data['token'])
+        print("UUID:", data['uuid'])
+        print("JWT:", data['jwt'])
+        print("Type:", data['type'])
+        print("Version:", data['version'])
+
+        return render_template('index.html', Barcode=data['barcode'], Name=data['name'], Token=data['token'], Uuid=data['uuid'], Jwt=data['jwt'], Type=data['type'], Version=data['barcode'])
 
 @app.route('/download_history')
 def download_history():
