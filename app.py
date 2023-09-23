@@ -5,27 +5,21 @@ import os
 import csv
 import pandas as pd
 from datetime import datetime
+from tinydb import TinyDB, Query
 
-# Konfigurasi pin GPIO dan I2C
 pin_led_green = 9  # Pin Pisik di Pin no 16
 pin_led_blue = 10  # Pin Pisik di Pin no 18 
 pin_led_red = 16   # Pin Pisik di Pin no 26
+
 bus_number = 0
-
 device_address = 0x50
-MAX_STRING_LENGTH = 256
-
-
-os.system(f"gpio mode {pin_led_green} out")
-os.system(f"gpio mode {pin_led_red} out")
-os.system(f"gpio mode {pin_led_blue} out")
 
 bus = smbus2.SMBus(bus_number)
 
 app = Flask(__name__)
 
 def write_string_to_eeprom(start_address, data):
-    os.system(f"gpio write {pin_led_blue} 1")
+    os.system(f"gpio write {pin_led_blue} 0")
     for i in range(len(data)):
         msb = start_address >> 8
         lsb = start_address & 0xFF
@@ -35,7 +29,6 @@ def write_string_to_eeprom(start_address, data):
     os.system(f"gpio write {pin_led_blue} 0")
 
 def read_string(address, length):
-    bus = smbus2.SMBus(0)
     bus.write_byte_data(device_address, (address >> 8) & 0xFF, address & 0xFF)
     time.sleep(0.005)
 
@@ -51,108 +44,92 @@ def index():
 
 @app.route('/write_data', methods=['POST'])
 def write_data():
+        if request.method == 'POST':
+            write_barcode = request.json['barcode']
+            write_name = request.json['name']
+            write_token = request.json['token']
+            write_uuid = request.json['uuid']
+            write_jwt = request.json['jwt']
+            write_type = request.json['type']
+            write_version = request.json['version']
 
-    if request.method == 'POST':
-        write_barcode = request.json['barcode']
-        write_name = request.json['name']
-        write_token = request.json['token']
-        write_uuid = request.json['uuid']
-        write_jwt = request.json['jwt']
-        write_type = request.json['type']
-        write_version = request.json['version']
+            save_data = {
+                'barcode': write_barcode,
+                'name': write_name,
+                'token': write_token,
+                'uuid': write_uuid,
+                'jwt': write_jwt,
+                'type': write_type,
+                'version': write_version
+            }
 
-        print(write_barcode, write_name, write_token, write_uuid, write_jwt, write_type, write_version)
+            data_str = ''
+            for key, value in save_data.items():
+                data_str += str(value) + ';'
 
-        address = 0
-        write_string_to_eeprom(address, write_barcode)
-        address += len(write_barcode)
-        write_string_to_eeprom(address, write_name)
-        address += len(write_name)
-        write_string_to_eeprom(address, write_token)
-        address += len(write_token)
-        write_string_to_eeprom(address, write_uuid)
-        address += len(write_uuid)
-        write_string_to_eeprom(address, write_jwt)
-        address += len(write_jwt)
-        write_string_to_eeprom(address, write_type)
-        address += len(write_type)
-        write_string_to_eeprom(address, write_version)
+            write_string_to_eeprom(0, data_str)
 
-        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # Membaca file CSV jika sudah ada atau membuatnya jika belum ada
-        csv_file = 'inject_history.csv'
-        fieldnames = ['Barcode', 'Name','Date']
+            # Database
+            db = TinyDB('db.json')
+            print("Check TinyDB")
+            db.insert({'Datetime': current_time,'Barcode': write_barcode, 'Name': write_name})
+            for item in db:
+                print(item.doc_id, item)
 
-        # Menambahkan data baru ke CSV
-        with open(csv_file, mode='a', newline='') as history_file:
-            history_writer = csv.DictWriter(history_file, fieldnames=fieldnames)
+            # Membaca file CSV jika sudah ada atau membuatnya jika belum ada
+            csv_file = 'inject_history.csv'
+            fieldnames = ['Barcode', 'Name','Date']
 
-            # Jika file kosong, tulis header
-            if os.stat(csv_file).st_size == 0:
-                history_writer.writeheader()
+            # Menambahkan data baru ke CSV
+            with open(csv_file, mode='a', newline='') as history_file:
+                history_writer = csv.DictWriter(history_file, fieldnames=fieldnames)
 
-            history_writer.writerow({
-                'Barcode': write_barcode,
-                'Name': write_name,
-                'Date': current_time,
-            })
+                # Jika file kosong, tulis header
+                if os.stat(csv_file).st_size == 0:
+                    history_writer.writeheader()
 
-        os.system(f"gpio write {pin_led_green} 1")
-        time.sleep(2)
-        os.system(f"gpio write {pin_led_green} 0")
-        
-        return redirect(url_for('index'))
+                history_writer.writerow({
+                    'Barcode': write_barcode,
+                    'Name': write_name,
+                    'Date': current_time,
+                })
+
+            os.system(f"gpio write {pin_led_green} 1")
+            time.sleep(2)
+            os.system(f"gpio write {pin_led_green} 0")
+    
+            return redirect(url_for('index'))
 
 @app.route('/read_data', methods=['POST'])
 def read_data():
-        
-        # feederBarcode = read_string(0, 22)
-        # feederName = read_string(22, 14)
-        # feederToken = read_string(36, 14)
-        # feederUuid = read_string(50, 36)
-        # feederJwt = read_string(86, 72)
-        # feederType = read_string(158, 4)
-        # feederVersion = read_string(162, 4)
+    read_data = read_string(0, 1024)  
 
-        # os.system(f"gpio write {pin_led_green} 1")
-        # time.sleep(2)
-        # os.system(f"gpio write {pin_led_green} 0")
+    print("Data yang dibaca dari EEPROM:", read_data)
 
-        # print("Feeder Barcode:", feederBarcode)
-        # print("Feeder Name:", feederName)
-        # print("Feeder Token:", feederToken)
-        # print("Feeder UUID:", feederUuid)
-        # print("Feeder JWT:", feederJwt)
-        # print("Feeder Type:", feederType)
-        # print("Feeder Version:", feederVersion)
+    strArr = list(filter(None, read_data.split(';')))
 
-        read_data = read_string(0, 1024)  
+    data = {
+        'barcode': strArr[0],
+        'name': strArr[1],
+        'token': strArr[2],
+        'uuid': strArr[3],
+        'jwt': strArr[4],
+        'type': strArr[5],
+        'version': strArr[6]
+    }
 
-        print("Data yang dibaca dari EEPROM:", read_data)
+    print("Objek yang dihasilkan dari data EEPROM:", data)
+    print("Barcode:", data['barcode'])
+    print("Name:", data['name'])
+    print("Token:", data['token'])
+    print("UUID:", data['uuid'])
+    print("JWT:", data['jwt'])
+    print("Type:", data['type'])
+    print("Version:", data['version'])
 
-        strArr = list(filter(None, read_data.split(';')))
-
-        data = {
-            'barcode': strArr[0],
-            'name': strArr[1],
-            'token': strArr[2],
-            'uuid': strArr[3],
-            'jwt': strArr[4],
-            'type': strArr[5],
-            'version': strArr[6]
-        }
-
-        print("Objek yang dihasilkan dari data EEPROM:", data)
-        print("Barcode:", data['barcode'])
-        print("Name:", data['name'])
-        print("Token:", data['token'])
-        print("UUID:", data['uuid'])
-        print("JWT:", data['jwt'])
-        print("Type:", data['type'])
-        print("Version:", data['version'])
-
-        return render_template('index.html', Barcode=data['barcode'], Name=data['name'], Token=data['token'], Uuid=data['uuid'], Jwt=data['jwt'], Type=data['type'], Version=data['barcode'])
+    return render_template('index.html', Barcode=data['barcode'], Name=data['name'], Token=data['token'], Uuid=data['uuid'], Jwt=data['jwt'], Type=data['type'], Version=data['version'])
 
 @app.route('/download_history')
 def download_history():
@@ -163,3 +140,8 @@ def download_history():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
+
+
+
+      
+
