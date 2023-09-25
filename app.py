@@ -3,12 +3,12 @@ import smbus2
 import time
 import os
 import csv
-import pandas as pd
 from datetime import datetime
-from tinydb import TinyDB, Query
+from tinydb import TinyDB
+import requests  # Perlu impor requests
 
 pin_led_green = 9  # Pin Pisik di Pin no 16
-pin_led_blue = 10  # Pin Pisik di Pin no 18 
+pin_led_blue = 10  # Pin Pisik di Pin no 18
 pin_led_red = 16   # Pin Pisik di Pin no 26
 
 bus_number = 0
@@ -44,67 +44,83 @@ def index():
 
 @app.route('/write_data', methods=['POST'])
 def write_data():
-        if request.method == 'POST':
-            write_barcode = request.json['barcode']
-            write_name = request.json['name']
-            write_token = request.json['token']
-            write_uuid = request.json['uuid']
-            write_jwt = request.json['jwt']
-            write_type = request.json['type']
-            write_version = request.json['version']
+    if request.method == 'POST':
+        write_id = request.json['id']
+        write_barcode = request.json['barcode']
+        write_name = request.json['name']
+        write_token = request.json['token']
+        write_uuid = request.json['uuid']
+        write_jwt = request.json['jwt']
+        write_type = request.json['type']
+        write_version = request.json['version']
 
-            save_data = {
-                'barcode': write_barcode,
-                'name': write_name,
-                'token': write_token,
-                'uuid': write_uuid,
-                'jwt': write_jwt,
-                'type': write_type,
-                'version': write_version
-            }
+        save_data = {
+            'barcode': write_barcode,
+            'name': write_name,
+            'token': write_token,
+            'uuid': write_uuid,
+            'jwt': write_jwt,
+            'type': write_type,
+            'version': write_version
+        }
 
-            data_str = ''
-            for key, value in save_data.items():
-                data_str += str(value) + ';'
+        data_str = ''
+        for key, value in save_data.items():
+            data_str += str(value) + ';'
 
-            write_string_to_eeprom(0, data_str)
+        write_string_to_eeprom(0, data_str)
 
-            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            # Database
-            db = TinyDB('db.json')
-            print("Check TinyDB")
-            db.insert({'Datetime': current_time,'Barcode': write_barcode, 'Name': write_name})
-            for item in db:
-                print(item.doc_id, item)
+        # Database
+        db = TinyDB('db.json')
+        print("Check TinyDB")
+        db.insert({'Datetime': current_time,'Barcode': write_barcode, 'Name': write_name})
+        for item in db:
+            print(item.doc_id, item)
 
-            # Membaca file CSV jika sudah ada atau membuatnya jika belum ada
-            csv_file = 'inject_history.csv'
-            fieldnames = ['Barcode', 'Name','Date']
+        # Membaca file CSV jika sudah ada atau membuatnya jika belum ada
+        csv_file = 'inject_history.csv'
+        fieldnames = ['Barcode', 'Name','Date']
 
-            # Menambahkan data baru ke CSV
-            with open(csv_file, mode='a', newline='') as history_file:
-                history_writer = csv.DictWriter(history_file, fieldnames=fieldnames)
+        # Menambahkan data baru ke CSV
+        with open(csv_file, mode='a', newline='') as history_file:
+            history_writer = csv.DictWriter(history_file, fieldnames=fieldnames)
 
-                # Jika file kosong, tulis header
-                if os.stat(csv_file).st_size == 0:
-                    history_writer.writeheader()
+            # Jika file kosong, tulis header
+            if os.stat(csv_file).st_size == 0:
+                history_writer.writeheader()
 
-                history_writer.writerow({
-                    'Barcode': write_barcode,
-                    'Name': write_name,
-                    'Date': current_time,
-                })
+            history_writer.writerow({
+                'Barcode': write_barcode,
+                'Name': write_name,
+                'Date': current_time,
+            })
 
-            os.system(f"gpio write {pin_led_green} 1")
-            time.sleep(2)
-            os.system(f"gpio write {pin_led_green} 0")
-    
-            return redirect(url_for('index'))
+        id = write_id
+        print("ID:", id)
+
+        update_status = f'https://l4dz56mh-3000.asse.devtunnels.ms/eeprom/{id}'
+        update_data = {'status': 'injected'}
+        
+        try:
+            response = requests.patch(update_status, json=update_data)
+            if response.status_code == 200:
+                print("Status berhasil diupdate menjadi 'injected'")
+            else:
+                print("Gagal mengupdate status")
+        except requests.exceptions.RequestException as e:
+            print("Gagal mengupdate status:", str(e))
+
+        os.system(f"gpio write {pin_led_green} 1")
+        time.sleep(2)
+        os.system(f"gpio write {pin_led_green} 0")
+
+        return redirect(url_for('index'))
 
 @app.route('/read_data', methods=['POST'])
 def read_data():
-    read_data = read_string(0, 1024)  
+    read_data = read_string(0, 1024)
 
     print("Data yang dibaca dari EEPROM:", read_data)
 
@@ -119,15 +135,6 @@ def read_data():
         'type': strArr[5],
         'version': strArr[6]
     }
-
-    print("Objek yang dihasilkan dari data EEPROM:", data)
-    print("Barcode:", data['barcode'])
-    print("Name:", data['name'])
-    print("Token:", data['token'])
-    print("UUID:", data['uuid'])
-    print("JWT:", data['jwt'])
-    print("Type:", data['type'])
-    print("Version:", data['version'])
 
     return render_template('index.html', Barcode=data['barcode'], Name=data['name'], Token=data['token'], Uuid=data['uuid'], Jwt=data['jwt'], Type=data['type'], Version=data['version'])
 
