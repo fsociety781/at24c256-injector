@@ -98,7 +98,6 @@ def write_data():
             })
 
         id = write_id
-        print("ID:", id)
 
         update_status = f'https://l4dz56mh-3000.asse.devtunnels.ms/eeprom/{id}'
         update_data = {'status': 'injected'}
@@ -112,6 +111,24 @@ def write_data():
         except requests.exceptions.RequestException as e:
             print("Gagal mengupdate status:", str(e))
 
+        inject_history =  f'https://l4dz56mh-3000.asse.devtunnels.ms/history'
+        data_history = {
+            'barcode': write_barcode,
+            'name': write_name,
+            'token': write_token,
+            'uuid': write_uuid,
+            'datetime': current_time
+        }
+
+        try:
+            response = requests.post(inject_history, json=data_history)
+            if response.status_code == 200:
+                print("Berhasil Menyimpan Histori Inject")
+            else:
+                print("Gagal Menyimpan Histori Inject")
+        except requests.exceptions.RequestException as e:
+            print("Gagal Menyimpan Histori Inject:", str(e))
+            
         os.system(f"gpio write {pin_led_green} 1")
         time.sleep(2)
         os.system(f"gpio write {pin_led_green} 0")
