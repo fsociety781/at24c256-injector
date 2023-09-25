@@ -148,6 +148,16 @@
                     body: JSON.stringify(data),
                 });
 
+                if(response = 200){
+                    const updateResponse = await fetch(`https://l4dz56mh-3000.asse.devtunnels.ms/eeprom/${id}`, {
+                        method: "PACTH",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({status: "injected"}),
+                    })
+                }
+
                 const resJson = await response.json();
                 console.log(resJson);
                 loadingPopup.style.display = "none"; 
