@@ -16,6 +16,7 @@ Langkah-langkah untuk mengatur Orange Pi Anda:
 Untuk menginstal perangkat lunak dan alat yang diperlukan, ikuti instruksi berikut:
 
 - [Instruksi 1: Buka terminal pada Orange Pi.]
+  - asdkahsdasnd 
 - [Instruksi 2: Gunakan perintah `apt-get` atau `pip` untuk menginstal perangkat lunak yang diperlukan.]
 
 ## 3. Setting Pin IO
