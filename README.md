@@ -14,9 +14,13 @@ Setup terlebih dahulu orangepi nya agar bisa menjalankan Web App ini.
       - [2. Ketik pada terminal ```sudo apt-get update ```, untuk mengambil daftar paket terbaru (metadata) dari repositori paket Debian.]
       - [3. Ketik pada terminal ```sudo apt-get upgrade```, untuk memperbarui semua paket yang ada ke versi terbaru. ]
       - [4. Done Debian sudah terupdate pada package terbaru.]
-2.    Install Tools dan Software yang di perlukan
-3.    Setting i2c pin
-4.    Setting Pin io
+2.    Install Tools dan Software
+      - [1. Buka terminal pada Orange Pi ]
+      - [2. Install pip untuk install liblary yang di butuhkan ```sudo apt-get install python3-pip```.]
+      - [3. Install Flask ```sudo pip3 install flask```,framework web pada python]
+      - [4. Done Debian sudah terupdate pada package terbaru.]
+4.    Setting i2c pin
+5.    Setting Pin io
     
 
 ## B. Instalasi Perangkat Lunak dan Alat yang Diperlukan
