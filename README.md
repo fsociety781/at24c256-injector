@@ -10,7 +10,7 @@ Setup terlebih dahulu orangepi nya agar bisa menjalankan Web App ini.
       - [1. Buka terminal pada Orange Pi ]
       - [2. Ketik pada terminal ```sudo apt-get update ```, untuk mengambil daftar paket terbaru (metadata) dari repositori paket Debian.]
       - [3. Ketik pada terminal ```sudo apt-get upgrade```, untuk memperbarui semua paket yang ada ke versi terbaru. ]
-      - [4. Done Debian sudah terupdate pada package terbaru.]
+      - 4. Done Debian sudah terupdate pada package terbaru.
 
 ## B. Instalasi Perangkat Lunak dan Alat yang Diperlukan
 
