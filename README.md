@@ -2,7 +2,7 @@
 
 Web APP at24c256 Injector Eeprom
 
-## 1. Setup Orange Pi
+### 1. Setup Orange Pi
 
 Langkah-langkah untuk mengatur Orange Pi Anda:
 
