@@ -2,6 +2,9 @@
 
 Web APP at24c256 Injector Eeprom
 
+## Note
+Password default pada Orange Pi : orangepi
+
 ## A. Setup Orange Pi
 
 Setup terlebih dahulu orangepi nya agar bisa menjalankan Web App ini.
@@ -11,7 +14,9 @@ Setup terlebih dahulu orangepi nya agar bisa menjalankan Web App ini.
       - [2. Ketik pada terminal ```sudo apt-get update ```, untuk mengambil daftar paket terbaru (metadata) dari repositori paket Debian.]
       - [3. Ketik pada terminal ```sudo apt-get upgrade```, untuk memperbarui semua paket yang ada ke versi terbaru. ]
       - [4. Done Debian sudah terupdate pada package terbaru.]
-2.    
+2.    Install Tools dan Software yang di perlukan
+3.    Setting i2c pin
+4.    Setting Pin io
     
 
 ## B. Instalasi Perangkat Lunak dan Alat yang Diperlukan
