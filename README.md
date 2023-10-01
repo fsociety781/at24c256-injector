@@ -48,12 +48,12 @@ Setup terlebih dahulu orangepi nya agar bisa menjalankan Web App ini.
       - [8. Done.]
     
 
-## B. Instalasi Perangkat Lunak dan Alat yang Diperlukan
+## B. Instalasi dan Menjalankan Web appnya
 
-Untuk menginstal perangkat lunak dan alat yang diperlukan, ikuti instruksi berikut:
-
-- [Instruksi 1: Buka terminal pada Orange Pi.]
-- [Instruksi 2: Gunakan perintah `apt-get` atau `pip` untuk menginstal perangkat lunak yang diperlukan.]
-- [Langkah 1: Buka terminal pada Orange Pi.]
-- [Langkah 2: Gunakan perintah `git clone` untuk mengklon repositori dari Bitbucket.]
-- [Langkah 3: Konfigurasikan dan jalankan perangkat lunak sesuai instruksi yang ada.]
+1.    Buka terminal
+2.    Clone repo dengan ketik perintah ```sudo git clone https://github.com/fsociety781/at24c256-injector.git```.
+3.    Masuk ke folder direktorinya Web app nya ketikan perintah ```cd at24c256-injector```.
+4.    Kemudian jalankan Web appnya dengan perintah ```sudo python3 app.py```.
+5.    Web app akan berjalan dan akan memberikan ip local untuk bisa mengakses webnya pada terminal.
+6.    Copy Ip tersebut dan paste ke web browser.
+7.    Done
