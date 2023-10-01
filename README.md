@@ -6,7 +6,7 @@ Web APP at24c256 Injector Eeprom
 
 Setup terlebih dahulu orangepi nya agar bisa menjalankan Web App ini.
 
-1.    Clone repo ```git clone https://github.com/ansthsys/ticket-concert```
+1.    Settup Orange (Bisa di lewat jika sudah menginstallnya)
   - [Langkah 1: Masukkan kartu microSD dengan sistem operasi yang sesuai ke dalam Orange Pi.]
   - [Langkah 2: Hubungkan Orange Pi ke daya dan sambungan jaringan.]
   - [Langkah 3: Nyalakan Orange Pi.]
