@@ -21,7 +21,7 @@ Setup terlebih dahulu orangepi nya agar bisa menjalankan Web App ini.
       - [3. Install Flask ```sudo pip3 install flask```,framework web pada python.]
       - [4. Install smbus2 ```sudo pip3 install smbus2```,library untuk berkomunikasi dengan perangkat yang terhubung melalui protokol I2C.]
       - [5. Install tinydb ```sudo pip3 install tinydb```,liblary database untuk mengelola data.]
-4.    Setting i2c pin
+3.    Setting i2c pin
       Tambahkan konfigurasi i2c pada ENV orangepi agar bisa berjalan.
       - [1. Buka terminal pada Orange Pi ]
       - [2. Edit file ```orangepiEnv.txt``` dengan cara buka berkas dengan perintah pada terminal ```sudo nano /boot/orangepiEnv.txt```.]
@@ -31,7 +31,7 @@ Setup terlebih dahulu orangepi nya agar bisa menjalankan Web App ini.
       - [6. Kemudian restart Orange Pi dengan masukan perintah ```sudo reboot```]
       - [7. Setelah reboot cek apakah i2c sudah bisa terpakai dan mendeteksi perangkat dengan cara ```sudo i2cdetect -y 0```.]
       - [8. Done.]
-5.    Setting Pin io
+4.    Setting Pin io
       Setting ini bertujuan agar membuka konfigurasi input dan ouput dari pin io yang ada di Orange Pi
       - [1. Buka terminal pada Orange Pi ]
       - [2. Clone tools untuk setting pin io pada repo github ini : ```https://github.com/orangepi-xunlong/wiringOP.git```.]
