@@ -15,6 +15,7 @@ Setup terlebih dahulu orangepi nya agar bisa menjalankan Web App ini.
       - [3. Ketik pada terminal ```sudo apt-get upgrade```, untuk memperbarui semua paket yang ada ke versi terbaru. ]
       - [4. Done Debian sudah terupdate pada package terbaru.]
 2.    Install Tools dan Software
+      Bertujuan Untuk dapat Menjalankan Web Aplikasi ini.
       - [1. Buka terminal pada Orange Pi ]
       - [2. Install pip untuk install liblary yang di butuhkan ```sudo apt-get install python3-pip```.]
       - [3. Install Flask ```sudo pip3 install flask```,framework web pada python.]
@@ -31,6 +32,20 @@ Setup terlebih dahulu orangepi nya agar bisa menjalankan Web App ini.
       - [7. Setelah reboot cek apakah i2c sudah bisa terpakai dan mendeteksi perangkat dengan cara ```sudo i2cdetect -y 0```.]
       - [8. Done.]
 6.    Setting Pin io
+      Setting ini bertujuan agar membuka konfigurasi input dan ouput dari pin io yang ada di Orange Pi
+      - [1. Buka terminal pada Orange Pi ]
+      - [2. Clone tools untuk setting pin io pada repo github ini : ```https://github.com/orangepi-xunlong/wiringOP.git```.]
+      - [3. Masuk ke folder direktori wiringOPnya ketikan perintah ```cd wiringOP```.]
+      - [4. Lalu build tool nya dengan ketik perintah```sudo ./build clean``` dan ```sudo ./build``` untuk membuil tool agar bisa di pakai.]
+      - [5. Setelah selesai ketik ```sudo gpio readall``` untuk melihat settingan awal pada Orange Pi.]
+      - [6. Kemudian setting pin beberapa pin io sesui denga kebutuhan dengan ketik perintah ```sudo gpio mode (pin yang akan di setting) ALT3```]
+        -[Contoh]
+        -[untuk pin 9 pada pin pisiknya terdapat pada pin ke 16 ```gpio mode 9 alt3```]
+        -[untuk pin 10 pada pin pisiknya terdapat pada pin ke 18 ```gpio mode 10 alt3```]
+        -[untuk pin 16 pada pin pisiknya terdapat pada pin ke 26 ```gpio mode 16 alt3```]  
+      - [7. Setelah kemudian reboot Orange Pinya ```sudo reboot```.]
+      - [9. Setelah setelah reboot cek apakah sudah berubah settingan nya dengan melakukan kembali langkah no 1 sampai 5.]
+      - [8. Done.]
     
 
 ## B. Instalasi Perangkat Lunak dan Alat yang Diperlukan
