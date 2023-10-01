@@ -6,12 +6,11 @@ Web APP at24c256 Injector Eeprom
 
 Setup terlebih dahulu orangepi nya agar bisa menjalankan Web App ini.
 
-1.    Setup Orange (Bisa di lewat jika sudah menginstallnya)
-      - [1. Download Image atau images Pada website Orange Pi  ```http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/service-and-support/Orange-pi-3-LTS.html```, Pilih debian images ]
-      - [1. Masukkan kartu microSD dengan sistem operasi yang sesuai ke dalam Orange Pi.]
-      - [Langkah 2: Hubungkan Orange Pi ke daya dan sambungan jaringan.]
-      - [Langkah 3: Nyalakan Orange Pi.]
-      - [Langkah 4: Akses Orange Pi melalui SSH atau monitor dan keyboard.]
+1.    Setup Orange (Untuk memperbarui sistem debian yang terinstall di orange pi)
+      - [1. Buka terminal pada Orange Pi ]
+      - [2. Ketik pada terminal ```sudo apt-get update ```, untuk mengambil daftar paket terbaru (metadata) dari repositori paket Debian.]
+      - [3. Ketik pada terminal ```sudo apt-get upgrade```, untuk memperbarui semua paket yang ada ke versi terbaru. ]
+      - [4. Done Debian sudah terupdate pada package terbaru.]
 
 ## B. Instalasi Perangkat Lunak dan Alat yang Diperlukan
 
