@@ -31,7 +31,7 @@ Setup terlebih dahulu orangepi nya agar bisa menjalankan Web App ini.
       - [6. Kemudian restart Orange Pi dengan masukan perintah ```sudo reboot```]
       - [7. Setelah reboot cek apakah i2c sudah bisa terpakai dan mendeteksi perangkat dengan cara ```sudo i2cdetect -y 0```.]
       - [8. Done.]
-6.    Setting Pin io
+5.    Setting Pin io
       Setting ini bertujuan agar membuka konfigurasi input dan ouput dari pin io yang ada di Orange Pi
       - [1. Buka terminal pada Orange Pi ]
       - [2. Clone tools untuk setting pin io pada repo github ini : ```https://github.com/orangepi-xunlong/wiringOP.git```.]
