@@ -7,10 +7,10 @@ Web APP at24c256 Injector Eeprom
 Setup terlebih dahulu orangepi nya agar bisa menjalankan Web App ini.
 
 1. Setup Orange pi
-- [Langkah 1: Masukkan kartu microSD dengan sistem operasi yang sesuai ke dalam Orange Pi.]
-- [Langkah 2: Hubungkan Orange Pi ke daya dan sambungan jaringan.]
-- [Langkah 3: Nyalakan Orange Pi.]
-- [Langkah 4: Akses Orange Pi melalui SSH atau monitor dan keyboard.]
+  - [Langkah 1: Masukkan kartu microSD dengan sistem operasi yang sesuai ke dalam Orange Pi.]
+  - [Langkah 2: Hubungkan Orange Pi ke daya dan sambungan jaringan.]
+  - [Langkah 3: Nyalakan Orange Pi.]
+  - [Langkah 4: Akses Orange Pi melalui SSH atau monitor dan keyboard.]
 
 ## B. Instalasi Perangkat Lunak dan Alat yang Diperlukan
 
