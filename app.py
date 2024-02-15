@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file
+from flask import Flask, render_template, request, redirect, url_for, send_file, jsonify
+from flask_cors import CORS
 import smbus2
 import time
 import os
@@ -17,9 +18,10 @@ device_address = 0x50
 bus = smbus2.SMBus(bus_number)
 
 app = Flask(__name__)
+CORS(app)
 
 def write_string_to_eeprom(start_address, data):
-    os.system(f"gpio write {pin_led_blue} 0")
+    os.system(f"gpio write {pin_led_blue} 1")
     for i in range(len(data)):
         msb = start_address >> 8
         lsb = start_address & 0xFF
@@ -27,16 +29,22 @@ def write_string_to_eeprom(start_address, data):
         time.sleep(0.01)
         start_address += 1
     os.system(f"gpio write {pin_led_blue} 0")
+    
+    os.system(f"gpio write {pin_led_green} 1")
+    time.sleep(5)
+    os.system(f"gpio write {pin_led_green} 0")
 
 def read_string(address, length):
     bus.write_byte_data(device_address, (address >> 8) & 0xFF, address & 0xFF)
     time.sleep(0.005)
-
     data = []
     for _ in range(length):
         data.append(bus.read_byte(device_address))
-
+    os.system(f"gpio write {pin_led_green} 1")
+    time.sleep(5)
+    os.system(f"gpio write {pin_led_green} 0")
     return "".join([chr(byte) for byte in data])
+    
 
 @app.route('/')
 def index():
@@ -129,10 +137,6 @@ def write_data():
         except requests.exceptions.RequestException as e:
             print("Gagal Menyimpan Histori Inject:", str(e))
             
-        os.system(f"gpio write {pin_led_green} 1")
-        time.sleep(2)
-        os.system(f"gpio write {pin_led_green} 0")
-
         return redirect(url_for('index'))
 
 @app.route('/read_data', methods=['POST'])
@@ -146,14 +150,16 @@ def read_data():
     data = {
         'barcode': strArr[0],
         'name': strArr[1],
-        'token': strArr[2],
-        'uuid': strArr[3],
-        'jwt': strArr[4],
+        # 'token': strArr[2],
+        # 'uuid': strArr[3],
+        # 'jwt': strArr[4],
         'type': strArr[5],
         'version': strArr[6]
     }
 
-    return render_template('index.html', Barcode=data['barcode'], Name=data['name'], Token=data['token'], Uuid=data['uuid'], Jwt=data['jwt'], Type=data['type'], Version=data['version'])
+    return jsonify(barcode=data['barcode'], name=data['name'], type=data['type'], version=data['version'])
+
+    # return render_template('index.html', Barcode=data['barcode'], Name=data['name'], Token=data['token'], Uuid=data['uuid'], Jwt=data['jwt'], Type=data['type'], Version=data['version'])
 
 @app.route('/download_history')
 def download_history():
